@@ -1,10 +1,23 @@
+#[deny(non_camel_case_types,
+       non_snake_case,
+       unused_import_braces,
+       trivial_numeric_casts,
+       unstable_features,
+       unused_allocation,
+       unused_imports,
+       unused_must_use,
+       unused_mut,
+       unused_qualifications,
+       while_true,
+       unsafe_code)]
+
 extern crate reqwest;
 extern crate select;
 extern crate regex;
 
 use select::document::Document;
 use select::predicate::{Attr, Name, And, Class};
-use regex::{RegexBuilder, Regex, Captures};
+use regex::{RegexBuilder, Regex};
 
 
 fn get_current_dax() -> Vec<String> {
@@ -16,6 +29,7 @@ fn get_current_dax() -> Vec<String> {
     if let Ok(d) = res {
         let pat = Regex::new(r"/aktie/(.*)-Aktie").unwrap();
         let predicate = And(Name("a"), And(Attr("href", ()), Attr("title", ()))); 
+
         let x = d.find(predicate)
             .map(|d| d.html())
             .map(|h| pat.captures(&h)
@@ -62,9 +76,7 @@ fn main() {
         println!("{} - {}", n, v);
     }
 
-    /*
     for c in get_current_dax() {
         println!("{}", c);
     }
-    */
 }
