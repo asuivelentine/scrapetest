@@ -30,15 +30,13 @@ fn get_current_dax() -> Vec<String> {
         let pat = Regex::new(r"/aktie/(.*)-Aktie").unwrap();
         let predicate = And(Name("a"), And(Attr("href", ()), Attr("title", ()))); 
 
-        let x = d.find(predicate)
+        return d.find(predicate)
             .map(|d| d.html())
             .map(|h| pat.captures(&h)
                  .map(|c| c[1].to_string()))
             .filter(|s| s.is_some())
             .map(|s| s.unwrap())
             .collect::<Vec<String>>();
-        
-        return x;
     }
     Vec::new()
 }
