@@ -4,6 +4,7 @@ extern crate regex;
 
 use select::document::Document;
 use select::predicate::{Attr, Name, And};
+use regex::Regex;
 
 
 fn run() -> Result<(), ()> {
@@ -13,19 +14,19 @@ fn run() -> Result<(), ()> {
             .map_err(|e| ()));
 
     if let Ok(d) = res {
+        let pat  = Regex::new(r"/aktie/(.*)-Aktie").unwrap();
         let predicate = And(Name("a"), And(Attr("href", ()), Attr("title", ()))); 
         let x = d.find(predicate)
             .map(|d| d.html())
-            .filter(|x| x.contains("/aktie/"))
+            .map(|h| pat.captures(&h)
+                 .map(|c| c[0].to_string()))
+            .filter(|s| s.is_some())
+            .map(|s| s.unwrap())
             .collect::<Vec<String>>();
 
         
         for w in x {
             println!("{:?}", w);
-        }
-
-        for link in d.find(predicate) {
-            println!("{}", link.html());
         }
     }
     Ok(())
